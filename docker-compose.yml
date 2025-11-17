@@ -14,13 +14,14 @@ services:
     restart: always
 
   frontend:
-    build:
-      context: ./frontend
-    container_name: stax_frontend
-    ports:
-      - "3000:3000"
-    environment:
-      - REACT_APP_API_URL=http://backend:8000/api/
-    depends_on:
-      - backend
-    restart: always
+  build:
+    context: ./frontend
+  container_name: stax_frontend
+  ports:
+    - "3000:80"
+  environment:
+    - REACT_APP_API_URL=http://206.189.19.151:8000/api/
+  depends_on:
+    - backend
+  restart: always
+
