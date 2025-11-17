@@ -1,24 +1,20 @@
 import axios from "axios";
 
-// base API for all requests
-const { data } = await axios.post(
-  "http://206.189.19.151:8000/api/token/refresh/",
-  { refresh }
-);
+const API = axios.create({
+  baseURL: "/api/",
+});
 
-// add access token on every request
 API.interceptors.request.use(
   (config) => {
-    const access = localStorage.getItem("access");
-    if (access) {
-      config.headers.Authorization = `Bearer ${access}`;
+    const token = localStorage.getItem("access");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// handle expired access token
 API.interceptors.response.use(
   (res) => res,
   async (error) => {
@@ -30,22 +26,24 @@ API.interceptors.response.use(
       const refresh = localStorage.getItem("refresh");
       if (!refresh) {
         localStorage.clear();
-        window.location.href = "/login";
+        document.location = "/login";
         return Promise.reject(error);
       }
 
       try {
         const { data } = await axios.post(
-          `${process.env.REACT_APP_API_URL || "http://backend:8000/api/"}token/refresh/`,
+          "/api/token/refresh/",
           { refresh }
         );
 
         localStorage.setItem("access", data.access);
-        API.defaults.headers.Authorization = `Bearer ${data.access}`;
+
+        original.headers.Authorization = `Bearer ${data.access}`;
         return API(original);
-      } catch {
+      } catch (err) {
         localStorage.clear();
-        window.location.href = "/login";
+        document.location = "/login";
+        return Promise.reject(err);
       }
     }
 
