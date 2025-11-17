@@ -10,14 +10,11 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: stax_frontend
-    ports:
-      - "3000:3000"
-    stdin_open: true
-    tty: true
-    environment:
-      - REACT_APP_API_URL=http://localhost:8000/api/
+frontend:
+  build:
+    context: ./frontend
+    dockerfile: Dockerfile
+  container_name: stax_frontend
+  ports:
+    - "80:80"    # FIXED — expose Nginx on real port 80
+  restart: always
