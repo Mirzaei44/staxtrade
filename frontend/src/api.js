@@ -1,9 +1,10 @@
 import axios from "axios";
 
 // base API for all requests
-const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:8000/api/",
-});
+const { data } = await axios.post(
+  "http://206.189.19.151:8000/api/token/refresh/",
+  { refresh }
+);
 
 // add access token on every request
 API.interceptors.request.use(
